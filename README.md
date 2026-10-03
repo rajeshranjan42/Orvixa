@@ -18,6 +18,15 @@ The checkout intentionally rejects live Razorpay keys. Product prices and order 
 
 Login and registration use Supabase Auth directly, so no separate Orvixa auth server is needed. Email and phone OTP delivery depends on your Supabase provider configuration and limits.
 
+### Enable sign-in on GitHub Pages
+
+1. In the GitHub repository, open **Settings → Secrets and variables → Actions → New repository secret**.
+2. Add `VITE_SUPABASE_URL` with the Supabase project URL and `VITE_SUPABASE_ANON_KEY` with the project's anon/publishable key. Do not use the Supabase service-role key.
+3. In **Actions**, rerun **Deploy to GitHub Pages** (or push a new commit). The login page enables OTP after the deployment is complete.
+4. In Supabase Authentication settings, enable Email sign-in. For phone OTP, also enable Phone and configure an SMS provider.
+
+Vite embeds the anon/publishable key in the public site bundle, as required for browser authentication. Supabase Row Level Security and authentication settings must protect project data.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
