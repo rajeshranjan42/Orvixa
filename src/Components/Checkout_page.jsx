@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { fetchApiJson } from '../utils/apiResponse'
+import { appPath } from '../utils/paths'
 import './checkout_page.css'
 
 const formatPrice = (amount) =>
@@ -128,7 +129,7 @@ export const CheckoutPage = ({ cart, onClearCart, onBack }) => {
             <div><dt>Payment reference</dt><dd>{confirmation.paymentId}</dd></div>
             <div><dt>Paid in test mode</dt><dd>{formatPrice(confirmation.amount / 100)}</dd></div>
           </dl>
-          <a href="/">Continue shopping</a>
+          <a href={appPath('/')}>Continue shopping</a>
         </section>
       </main>
     )
@@ -149,7 +150,7 @@ export const CheckoutPage = ({ cart, onClearCart, onBack }) => {
   return (
     <main className="checkout-page">
       <nav className="checkout-breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a><span aria-hidden="true">/</span><button type="button" onClick={onBack}>My Cart</button><span aria-hidden="true">/</span><span aria-current="page">Checkout</span>
+        <a href={appPath('/')}>Home</a><span aria-hidden="true">/</span><button type="button" onClick={onBack}>My Cart</button><span aria-hidden="true">/</span><span aria-current="page">Checkout</span>
       </nav>
       <header className="checkout-heading">
         <p className="checkout-eyebrow">SECURE CHECKOUT · TEST MODE</p>

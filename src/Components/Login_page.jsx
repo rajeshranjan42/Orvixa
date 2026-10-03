@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { isSupabaseConfigured } from '../lib/supabase'
 import logo from '../assets/Images/logo.png'
 import './login_page.css'
+import { appPath } from '../utils/paths'
 
 const OTP_LENGTH = 6
 const RESEND_DELAY = 30
@@ -161,7 +162,7 @@ export const LoginPage = ({ client, user, isLoading = false, onAuthChange = () =
           <div className="login-brand-orbit login-brand-orbit-one" aria-hidden="true" />
           <div className="login-brand-orbit login-brand-orbit-two" aria-hidden="true" />
           <div className="login-brand-content">
-            <a className="login-brand-mark" href="/" aria-label="Orvixa home">
+            <a className="login-brand-mark" href={appPath('/')} aria-label="Orvixa home">
               <img src={logo} alt="" />
             </a>
             <p className="login-brand-kicker">YOUR WORLD, BEAUTIFULLY CONNECTED</p>
@@ -194,7 +195,7 @@ export const LoginPage = ({ client, user, isLoading = false, onAuthChange = () =
               <button className="login-primary-button" type="button" onClick={signOut} disabled={busy}>
                 {busy ? 'Signing out…' : 'Sign out'}
               </button>
-              <a className="login-home-link" href="/">Continue shopping <span aria-hidden="true">→</span></a>
+              <a className="login-home-link" href={appPath('/')}>Continue shopping <span aria-hidden="true">→</span></a>
             </section>
           ) : step === 'success' ? (
             <section className="login-account-card" aria-live="polite">
@@ -203,7 +204,7 @@ export const LoginPage = ({ client, user, isLoading = false, onAuthChange = () =
               <h2>You’re all set.</h2>
               <p className="login-account-identity">{destination}</p>
               <p className="login-account-copy">Your Orvixa account is ready. You can now continue shopping.</p>
-              <a className="login-primary-button login-primary-link" href="/">Continue to Orvixa</a>
+              <a className="login-primary-button login-primary-link" href={appPath('/')}>Continue to Orvixa</a>
             </section>
           ) : (
             <>
@@ -267,7 +268,7 @@ export const LoginPage = ({ client, user, isLoading = false, onAuthChange = () =
                     {busy ? <><span className="login-spinner" aria-hidden="true" /> Sending code…</> : 'Send one-time code'}
                     {!busy && <span aria-hidden="true">→</span>}
                   </button>
-                  <p className="login-terms">By continuing, you agree to Orvixa’s <a href="/pages/terms-conditions">Terms</a> and <a href="/pages/privacy-policy">Privacy Policy</a>.</p>
+                  <p className="login-terms">By continuing, you agree to Orvixa’s <a href={appPath('/pages/terms-conditions')}>Terms</a> and <a href={appPath('/pages/privacy-policy')}>Privacy Policy</a>.</p>
                 </form>
               ) : (
                 <form className="login-form login-otp-form" onSubmit={verifyOtp}>

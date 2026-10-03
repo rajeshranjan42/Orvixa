@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './Header.css'
 import logo from '../../assets/Images/logo.png'
+import { appPath } from '../../utils/paths'
 
 
 const navigationItems = [
@@ -37,7 +38,9 @@ const categoryPaths = {
 }
 
 const getNavigationHref = (label) =>
-  categoryPaths[label] ?? `#${label.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}`
+  categoryPaths[label]
+    ? appPath(categoryPaths[label])
+    : `#${label.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}`
 
 const menuSections = [
   {
@@ -129,7 +132,7 @@ export const Header = ({
   return (
     <header className="site-header">
       <div className="header-main">
-        <a className="brand" href="/" aria-label="Orvixa home">
+        <a className="brand" href={appPath('/')} aria-label="Orvixa home">
           <img className="brand-logo" src={logo} alt="Orvixa" />
         </a>
 
@@ -187,14 +190,14 @@ export const Header = ({
           <span className="dropdown-caret" aria-hidden="true" />
         </button>
 
-        <a className="header-orders" href="/pages/returns-orders">
+        <a className="header-orders" href={appPath('/pages/returns-orders')}>
           <span className="header-copy">
             <span className="header-eyebrow">Returns</span>
             <strong>&amp; Orders</strong>
           </span>
         </a>
 
-        <a className="header-cart" href="/cart" aria-label={`Cart, ${cartCount} items`}>
+        <a className="header-cart" href={appPath('/cart')} aria-label={`Cart, ${cartCount} items`}>
           <span className="cart-icon-wrap">
             <CartIcon />
             <span className="cart-count">{cartCount}</span>

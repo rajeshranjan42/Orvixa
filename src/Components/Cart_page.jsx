@@ -1,4 +1,5 @@
 import './cart_page.css'
+import { appPath } from '../utils/paths'
 
 const formatPrice = (amount) =>
   new Intl.NumberFormat('en-IN', {
@@ -16,7 +17,7 @@ export const CartPage = ({ cart, onQuantityChange, onRemove, onClear, onCheckout
   return (
     <main className="cart-page">
       <nav className="new-arrivals-breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+        <a href={appPath('/')}>Home</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">My Cart</span>
       </nav>
@@ -39,14 +40,14 @@ export const CartPage = ({ cart, onQuantityChange, onRemove, onClear, onCheckout
           <span className="cart-empty-icon" aria-hidden="true">🛒</span>
           <h2>Your cart is waiting for something lovely</h2>
           <p>Explore Orvixa and add products you’d like to keep.</p>
-          <a href="/">Continue shopping <span aria-hidden="true">→</span></a>
+          <a href={appPath('/')}>Continue shopping <span aria-hidden="true">→</span></a>
         </section>
       ) : (
         <div className="cart-layout">
           <section className="cart-items" aria-label="Cart items">
             {cart.map((item) => (
               <article className="cart-item" key={`${item.brand ?? ''}-${item.name}`}>
-                <a className="cart-item-image" href="/" aria-label={`Continue shopping for ${item.name}`}>
+                <a className="cart-item-image" href={appPath('/')} aria-label={`Continue shopping for ${item.name}`}>
                   <img src={item.image} alt="" />
                 </a>
                 <div className="cart-item-details">
@@ -94,7 +95,7 @@ export const CartPage = ({ cart, onQuantityChange, onRemove, onClear, onCheckout
             <button className="cart-checkout-button" type="button" onClick={onCheckout}>
               Continue to checkout
             </button>
-            <a className="cart-continue-link" href="/">Continue shopping</a>
+            <a className="cart-continue-link" href={appPath('/')}>Continue shopping</a>
             <div className="cart-summary-assurance">
               <span aria-hidden="true">✓</span>
               <span>Order details remain available in your cart on this device.</span>

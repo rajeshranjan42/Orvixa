@@ -1,4 +1,5 @@
 import './customer_service.css'
+import { appPath } from '../utils/paths'
 
 const helpTopics = [
   {
@@ -59,7 +60,7 @@ export const CustomerServicePage = ({ content }) => {
   return (
     <main className="customer-service-page">
       <nav className="new-arrivals-breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+        <a href={appPath('/')}>Home</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">Customer Service</span>
       </nav>
@@ -85,7 +86,7 @@ export const CustomerServicePage = ({ content }) => {
         </div>
         <div className="customer-service-topic-grid">
           {topics.map((topic) => (
-            <a className="customer-service-topic" href={topic.href} key={topic.title}>
+            <a className="customer-service-topic" href={appPath(topic.href)} key={topic.title}>
               <span className="customer-service-topic-icon" aria-hidden="true">{topic.icon}</span>
               <span>
                 <strong>{topic.title}</strong>
@@ -118,7 +119,7 @@ export const CustomerServicePage = ({ content }) => {
           <h2>Still need a hand?</h2>
           <p>Visit your order details for order-specific help and support options.</p>
         </div>
-        <a href="/pages/faq">Browse frequently asked questions <span aria-hidden="true">→</span></a>
+        <a href={appPath('/pages/faq')}>Browse frequently asked questions <span aria-hidden="true">→</span></a>
       </aside>
     </main>
   )

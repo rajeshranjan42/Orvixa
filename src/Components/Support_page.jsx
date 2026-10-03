@@ -1,4 +1,5 @@
 import './support_page.css'
+import { appPath } from '../utils/paths'
 
 const supportPages = {
   'shipping-information': {
@@ -110,9 +111,9 @@ export const SupportPage = ({ page }) => {
   return (
     <main className="support-page">
       <nav className="new-arrivals-breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+        <a href={appPath('/')}>Home</a>
         <span aria-hidden="true">/</span>
-        <a href="/category/customer-service">Customer Service</a>
+        <a href={appPath('/category/customer-service')}>Customer Service</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{content.title}</span>
       </nav>
@@ -136,7 +137,7 @@ export const SupportPage = ({ page }) => {
             <section className="support-section" key={section.title}>
               <h2>{section.title}</h2>
               {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-              {section.link && <a href={section.link}>{section.linkLabel} <span aria-hidden="true">→</span></a>}
+              {section.link && <a href={appPath(section.link)}>{section.linkLabel} <span aria-hidden="true">→</span></a>}
             </section>
           ))}
         </div>
@@ -159,7 +160,7 @@ export const SupportPage = ({ page }) => {
             <h2>{content.callout.title}</h2>
             <p>{content.callout.text}</p>
           </div>
-          <a href={content.callout.href}>{content.callout.label} <span aria-hidden="true">→</span></a>
+          <a href={appPath(content.callout.href)}>{content.callout.label} <span aria-hidden="true">→</span></a>
         </aside>
       )}
     </main>

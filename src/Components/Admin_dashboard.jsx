@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './admin_dashboard.css'
+import { appPath } from '../utils/paths'
 import { readImageUpload } from '../utils/imageUpload'
 import { adminPages } from '../data/adminPageDefaults'
 
@@ -575,7 +576,7 @@ export const AdminDashboard = ({
           <h1>Admin Dashboard</h1>
           <span>Manage homepage products, banners, and demo order statuses.</span>
         </div>
-        <a href="/" className="admin-store-link">View storefront <span aria-hidden="true">→</span></a>
+        <a href={appPath('/')} className="admin-store-link">View storefront <span aria-hidden="true">→</span></a>
       </header>
 
       <aside className="admin-demo-warning" role="note">
@@ -619,7 +620,7 @@ export const AdminDashboard = ({
               <h2 id="admin-overview-title">Overview</h2>
               <span>Here’s what’s happening across your Orvixa storefront.</span>
             </div>
-            <a href="/" className="admin-overview-store-link">
+            <a href={appPath('/')} className="admin-overview-store-link">
               View storefront <span aria-hidden="true">↗</span>
             </a>
           </div>

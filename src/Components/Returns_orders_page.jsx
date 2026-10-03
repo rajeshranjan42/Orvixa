@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import './returns_orders_page.css'
+import { appPath } from '../utils/paths'
 
 const statusClass = (status) => status.toLowerCase().replaceAll(/[^a-z]+/g, '-')
 
@@ -15,7 +16,7 @@ export const ReturnsOrdersPage = ({ orders = [] }) => {
   return (
     <main className="returns-orders-page">
       <nav className="new-arrivals-breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+        <a href={appPath('/')}>Home</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">Returns &amp; Orders</span>
       </nav>
@@ -69,7 +70,7 @@ export const ReturnsOrdersPage = ({ orders = [] }) => {
                     <p>{order.item}</p>
                     <span>Ordered for {order.customer}</span>
                   </div>
-                  <a href="/pages/returns-refunds">Return &amp; refund help <span aria-hidden="true">→</span></a>
+                  <a href={appPath('/pages/returns-refunds')}>Return &amp; refund help <span aria-hidden="true">→</span></a>
                 </div>
               </article>
             ))}
@@ -92,8 +93,8 @@ export const ReturnsOrdersPage = ({ orders = [] }) => {
           <span>Learn about return eligibility, refund timing, and where to get support.</span>
         </div>
         <div className="returns-orders-help-actions">
-          <a href="/pages/returns-refunds">Returns &amp; refunds <span aria-hidden="true">→</span></a>
-          <a href="/category/customer-service">Customer Service <span aria-hidden="true">→</span></a>
+          <a href={appPath('/pages/returns-refunds')}>Returns &amp; refunds <span aria-hidden="true">→</span></a>
+          <a href={appPath('/category/customer-service')}>Customer Service <span aria-hidden="true">→</span></a>
         </div>
       </section>
     </main>

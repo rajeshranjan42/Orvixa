@@ -28,14 +28,16 @@ import { featuredProducts } from './data/featuredProducts'
 import { defaultPromotions } from './data/promotions'
 import { defaultPromoBanners } from './data/promoBanners'
 import { defaultAdminPageContent, defaultAdminPageProducts } from './data/adminPageDefaults'
+import { appPath, appPathname } from './utils/paths'
 
 function getCurrentPage() {
-  if (window.location.pathname === '/admin' || window.location.pathname === '/admin/') return 'admin'
-  if (window.location.pathname === '/cart' || window.location.pathname === '/cart/') return 'cart'
-  if (window.location.pathname === '/checkout' || window.location.pathname === '/checkout/') return 'checkout'
-  if (window.location.pathname === '/login' || window.location.pathname === '/login/') return 'login'
-  if (window.location.pathname === '/search' || window.location.pathname === '/search/') return 'search'
-  const match = window.location.pathname.match(/^\/(?:category|pages)\/([^/]+)\/?$/)
+  const pathname = appPathname()
+  if (pathname === '/admin' || pathname === '/admin/') return 'admin'
+  if (pathname === '/cart' || pathname === '/cart/') return 'cart'
+  if (pathname === '/checkout' || pathname === '/checkout/') return 'checkout'
+  if (pathname === '/login' || pathname === '/login/') return 'login'
+  if (pathname === '/search' || pathname === '/search/') return 'search'
+  const match = pathname.match(/^\/(?:category|pages)\/([^/]+)\/?$/)
   return match?.[1] ?? null
 }
 
@@ -136,7 +138,8 @@ function getInitialCart() {
 }
 
 function getInitialProduct() {
-  if (!window.location.pathname.startsWith('/product/')) return null
+  const pathname = appPathname()
+  if (!pathname.startsWith('/product/')) return null
 
   if (window.history.state?.product) return window.history.state.product
 
@@ -148,7 +151,7 @@ function getInitialProduct() {
     if (!product || typeof product.name !== 'string') return null
 
     const productSlug = product.name?.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')
-    const requestedSlug = window.location.pathname.split('/').filter(Boolean).at(-1)
+    const requestedSlug = pathname.split('/').filter(Boolean).at(-1)
 
     if (productSlug !== requestedSlug || typeof product.image !== 'string' || !product.price) return null
     return product
@@ -328,7 +331,7 @@ function App() {
   const openProduct = (product) => {
     const productSlug = product.name.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')
     window.sessionStorage.setItem('orvixa-current-product', JSON.stringify(product))
-    window.history.pushState({ product }, '', `/product/${productSlug}`)
+    window.history.pushState({ product }, '', appPath(`/product/${productSlug}`))
     setSelectedProduct(product)
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
@@ -361,14 +364,14 @@ function App() {
   }
 
   const navigateToCart = () => {
-    window.history.pushState({}, '', '/cart')
+    window.history.pushState({}, '', appPath('/cart'))
     setSelectedProduct(null)
     setSelectedPage('cart')
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
   const navigateToLogin = () => {
-    window.history.pushState({}, '', '/login')
+    window.history.pushState({}, '', appPath('/login'))
     setSelectedProduct(null)
     setSelectedPage('login')
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -376,7 +379,7 @@ function App() {
 
   const navigateToCheckout = () => {
     if (cart.length === 0) return
-    window.history.pushState({}, '', '/checkout')
+    window.history.pushState({}, '', appPath('/checkout'))
     setSelectedProduct(null)
     setSelectedPage('checkout')
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -432,7 +435,7 @@ function App() {
       setSelectedPage('search')
       setSearchQuery('')
       setSearchCategory(category)
-      window.history.pushState({}, '', `/search?category=${encodeURIComponent(category)}`)
+      window.history.pushState({}, '', appPath(`/search?category=${encodeURIComponent(category)}`))
       window.scrollTo({ top: 0, behavior: 'instant' })
       return
     }
@@ -442,7 +445,7 @@ function App() {
     setSelectedProduct(null)
     setSelectedPage('search')
     const params = new URLSearchParams({ q: normalizedQuery, category })
-    window.history.pushState({}, '', `/search?${params.toString()}`)
+    window.history.pushState({}, '', appPath(`/search?${params.toString()}`))
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
 

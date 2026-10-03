@@ -1,4 +1,5 @@
 import './information_page.css'
+import { appPath } from '../utils/paths'
 
 const pageContent = {
   'our-story': {
@@ -149,7 +150,7 @@ export const InformationPage = ({ page }) => {
   return (
     <main className="information-page">
       <nav className="new-arrivals-breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+        <a href={appPath('/')}>Home</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{content.title}</span>
       </nav>

@@ -1,5 +1,6 @@
 import './footer.css'
 import logo from '../../assets/Images/logo.png'
+import { appPath } from '../../utils/paths'
 
 const footerGroups = [
   {
@@ -54,7 +55,7 @@ export const Footer = () => {
 
       <div className="footer-main">
         <div className="footer-brand">
-          <a className="footer-logo-link" href="/" aria-label="Orvixa home">
+          <a className="footer-logo-link" href={appPath('/')} aria-label="Orvixa home">
             <img src={logo} alt="Orvixa" />
           </a>
           <p>Everything. One Place.</p>
@@ -67,7 +68,7 @@ export const Footer = () => {
             <ul>
               {group.links.map(([label, href]) => (
                 <li key={label}>
-                  <a href={href}>{label}</a>
+                  <a href={href.startsWith('/') ? appPath(href) : href}>{label}</a>
                 </li>
               ))}
             </ul>

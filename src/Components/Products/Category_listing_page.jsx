@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import './new_arrivals.css'
+import { appPath } from '../../utils/paths'
 
 const categoryMarks = {
   'deals-listing': 'DEAL',
@@ -41,7 +42,7 @@ export const CategoryListingPage = ({
   return (
     <main className={`new-arrivals-page ${badgeClass}`}>
       <nav className="new-arrivals-breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+        <a href={appPath('/')}>Home</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{title}</span>
       </nav>
@@ -64,7 +65,7 @@ export const CategoryListingPage = ({
           aria-hidden="true"
         >
           {!bannerMark && !categoryMarks[badgeClass]
-            ? <img src="/favicon.png" alt="" />
+            ? <img src={`${import.meta.env.BASE_URL}favicon.png`} alt="" />
             : bannerMark ?? categoryMarks[badgeClass]}
         </span>
       </header>

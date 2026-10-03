@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import './new_arrivals.css'
 import { newArrivals } from '../../data/newArrivals'
+import { appPath } from '../../utils/paths'
 
 export const NewArrivalsPage = ({ content, products = newArrivals, onProductSelect, onAddToCart }) => {
   const [sortBy, setSortBy] = useState('featured')
@@ -28,7 +29,7 @@ export const NewArrivalsPage = ({ content, products = newArrivals, onProductSele
   return (
     <main className="new-arrivals-page">
       <nav className="new-arrivals-breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+        <a href={appPath('/')}>Home</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{page.title}</span>
       </nav>
