@@ -20,12 +20,11 @@ Login and registration use Supabase Auth directly, so no separate Orvixa auth se
 
 ### Enable sign-in on GitHub Pages
 
-1. In the GitHub repository, open **Settings → Secrets and variables → Actions → New repository secret**.
-2. Add `VITE_SUPABASE_URL` with the Supabase project URL and `VITE_SUPABASE_ANON_KEY` with the project's anon/publishable key. Do not use the Supabase service-role key.
-3. In **Actions**, rerun **Deploy to GitHub Pages** (or push a new commit). The login page enables OTP after the deployment is complete.
-4. In Supabase Authentication settings, enable Email sign-in. For phone OTP, also enable Phone and configure an SMS provider.
+The Pages workflow uses `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` GitHub Actions secrets when configured. If those secrets are absent, it reads the same two public client settings from `.env.example`. The Supabase URL and anon/publishable key are browser configuration and are included in the public site; never use a service-role key.
 
-Vite embeds the anon/publishable key in the public site bundle, as required for browser authentication. Supabase Row Level Security and authentication settings must protect project data.
+In Supabase Authentication settings, enable Email sign-in. For phone OTP, also enable Phone and configure an SMS provider. Set the Supabase Site URL and allowed redirect URLs to `https://rajeshranjan42.github.io/Orvixa/`.
+
+Never put a Razorpay key secret in `.env.example` or a `VITE_` variable. Keep payment secrets only in the ignored local `.env` used by the local payment server.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

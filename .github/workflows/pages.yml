@@ -30,10 +30,24 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Build site
-        run: npm run build
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "${VITE_SUPABASE_URL:-}" ]; then
+            VITE_SUPABASE_URL="$(sed -n 's/^VITE_SUPABASE_URL=//p' .env.example | head -n 1)"
+          fi
+          if [ -z "${VITE_SUPABASE_ANON_KEY:-}" ]; then
+            VITE_SUPABASE_ANON_KEY="$(sed -n 's/^VITE_SUPABASE_ANON_KEY=//p' .env.example | head -n 1)"
+          fi
+          if [ -z "$VITE_SUPABASE_URL" ] || [ -z "$VITE_SUPABASE_ANON_KEY" ] \
+            || [ "$VITE_SUPABASE_URL" = "https://your-project.supabase.co" ] \
+            || [ "$VITE_SUPABASE_ANON_KEY" = "your_supabase_anon_or_publishable_key" ]; then
+            echo "Supabase public client settings are required for the hosted login. Add GitHub Actions secrets or configure the VITE_SUPABASE_* values in .env.example."
+            exit 1
+          fi
+          export VITE_SUPABASE_URL VITE_SUPABASE_ANON_KEY
+          npm run build
       - name: Add SPA fallback
         run: cp dist/index.html dist/404.html
       - name: Upload Pages artifact
