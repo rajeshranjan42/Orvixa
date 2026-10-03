@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" fill="none">
+  <defs>
+    <linearGradient id="case" x1="107" x2="258" y1="150" y2="248" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F9FCFF"/>
+      <stop offset="1" stop-color="#9DB4D3"/>
+    </linearGradient>
+    <linearGradient id="bud" x1="140" x2="210" y1="86" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF"/>
+      <stop offset="1" stop-color="#BACBE1"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="185" cy="254" fill="#071A3D" fill-opacity=".25" rx="133" ry="19"/>
+  <path d="M114 190c0-32 26-58 58-58h40c32 0 58 26 58 58v21c0 19-15 34-34 34h-88c-19 0-34-15-34-34v-21Z" fill="url(#case)" stroke="#FFF" stroke-width="4"/>
+  <path d="M114 192h156" stroke="#7F9BBE" stroke-width="4"/>
+  <rect x="169" y="219" width="46" height="6" rx="3" fill="#1689F5"/>
+  <g transform="rotate(-10 150 119)">
+    <path d="M147 63c-16 0-28 13-28 29v31c0 12 8 21 19 21s19-9 19-21V92c0-7 6-13 13-13h6V63h-29Z" fill="url(#bud)" stroke="#FFF" stroke-width="4"/>
+    <path d="M138 94v39" stroke="#0969D8" stroke-linecap="round" stroke-width="4"/>
+  </g>
+  <g transform="rotate(10 225 119)">
+    <path d="M213 63h6c7 0 13 6 13 13v46c0 12 8 21 19 21s19-9 19-21V92c0-16-12-29-28-29h-29v15Z" fill="url(#bud)" stroke="#FFF" stroke-width="4"/>
+    <path d="M251 94v39" stroke="#0969D8" stroke-linecap="round" stroke-width="4"/>
+  </g>
+  <path d="m90 96 5 12 12 5-12 5-5 12-5-12-12-5 12-5 5-12Zm207 21 4 9 9 4-9 4-4 9-4-9-9-4 9-4 4-9Z" fill="#FFC44D"/>
+</svg>

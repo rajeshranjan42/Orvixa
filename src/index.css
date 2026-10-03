@@ -1,0 +1,25 @@
+:root {
+  --color-midnight-navy: #071a3d;
+  --color-deep-navy: #0b2857;
+  --color-royal-blue: #0969d8;
+  --color-electric-blue: #1689f5;
+  --color-premium-gold: #f5a623;
+  --color-bright-gold: #ffc44d;
+  --color-white: #ffffff;
+  --color-soft-gray: #f4f7fa;
+  --color-text-dark: #172033;
+  --color-muted-text: #667085;
+
+  --gradient-brand: linear-gradient(135deg, #071a3d, #0969d8);
+  --gradient-premium-gold: linear-gradient(135deg, #f5a623, #ffc44d);
+  --gradient-hero: linear-gradient(
+    135deg,
+    #071a3d 0%,
+    #0b2857 45%,
+    #0969d8 100%
+  );
+}
+
+body {
+  margin: 0;
+}

@@ -1,0 +1,204 @@
+.hero-section {
+  overflow: hidden;
+  padding: 18px 0 28px;
+  background: var(--color-soft-gray);
+}
+
+.hero-carousel-wrap {
+  position: relative;
+}
+
+.hero-carousel {
+  display: grid;
+  grid-auto-columns: minmax(245px, 22vw);
+  grid-auto-flow: column;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 4px clamp(20px, 3vw, 48px) 16px;
+  scroll-behavior: smooth;
+  scroll-padding-inline: clamp(20px, 3vw, 48px);
+  scrollbar-width: none;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x mandatory;
+}
+
+.hero-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.promotion-card {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--color-midnight-navy);
+  box-shadow: 0 10px 24px rgb(7 26 61 / 16%);
+  scroll-snap-align: start;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.promotion-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px rgb(7 26 61 / 20%);
+}
+
+.promotion-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.promotion-copy {
+  position: absolute;
+  z-index: 1;
+  top: 4%;
+  right: 8%;
+  left: 8%;
+  color: #071a3d;
+  font-family: "Segoe UI", Arial, sans-serif;
+  text-shadow: 0 1px 1px rgb(255 255 255 / 22%);
+}
+
+.promotion-card-light .promotion-copy {
+  color: var(--color-white);
+  text-shadow: 0 1px 3px rgb(7 26 61 / 55%);
+}
+
+.promotion-copy h2,
+.promotion-copy h3,
+.promotion-copy p {
+  margin: 0;
+}
+
+.promotion-copy h2,
+.promotion-copy h3 {
+  overflow-wrap: anywhere;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.04;
+}
+
+.promotion-copy h2 {
+  font-size: clamp(19px, 2.1vw, 30px);
+}
+
+.promotion-copy h3 {
+  margin-top: 2px;
+  font-size: clamp(19px, 2.1vw, 30px);
+}
+
+.promotion-copy p {
+  margin-top: 6px;
+  font-size: clamp(11px, 1.05vw, 15px);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.promotion-benefits {
+  display: flex;
+  gap: 12px;
+  margin-top: 13px;
+  font-size: clamp(9px, 0.85vw, 12px);
+  font-weight: 600;
+  line-height: 1.12;
+}
+
+.promotion-benefits span + span {
+  border-left: 1px solid currentColor;
+  padding-left: 12px;
+}
+
+.hero-arrow {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  display: grid;
+  width: 42px;
+  height: 72px;
+  place-items: center;
+  border: 1px solid #d8e0eb;
+  border-radius: 12px;
+  color: var(--color-midnight-navy);
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 4px 14px rgb(7 26 61 / 14%);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.hero-arrow:hover {
+  color: var(--color-white);
+  background: var(--color-royal-blue);
+}
+
+.hero-arrow svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.hero-arrow-previous {
+  left: 0;
+}
+
+.hero-arrow-next {
+  right: 0;
+}
+
+@media (min-width: 1500px) {
+  .hero-carousel {
+    grid-auto-columns: minmax(280px, 19vw);
+  }
+}
+
+@media (max-width: 720px) {
+  .hero-section {
+    padding: 12px 0 20px;
+  }
+
+  .hero-carousel {
+    grid-auto-columns: minmax(250px, 76vw);
+    gap: 12px;
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .promotion-card {
+    border-radius: 16px;
+  }
+
+  .promotion-copy h2,
+  .promotion-copy h3 {
+    font-size: clamp(21px, 6vw, 29px);
+  }
+
+  .promotion-copy p {
+    font-size: 13px;
+  }
+
+  .promotion-benefits {
+    margin-top: 10px;
+    font-size: 10px;
+  }
+
+  .hero-arrow {
+    width: 36px;
+    height: 60px;
+    border-radius: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-arrow,
+  .promotion-card {
+    transition: none;
+  }
+
+  .hero-carousel {
+    scroll-behavior: auto;
+  }
+}

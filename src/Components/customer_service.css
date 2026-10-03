@@ -1,0 +1,279 @@
+.customer-service-page {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 26px 0 72px;
+  color: var(--text-dark, #172033);
+}
+
+.customer-service-page .new-arrivals-breadcrumb {
+  margin-bottom: 24px;
+}
+
+.customer-service-banner {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  min-height: 270px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px clamp(24px, 6vw, 72px);
+  border-radius: 22px;
+  color: #fff;
+  background: linear-gradient(120deg, #071a3d, #0b2857 58%, #0969d8);
+}
+
+.customer-service-banner::after {
+  position: absolute;
+  right: -44px;
+  bottom: -190px;
+  width: 440px;
+  height: 440px;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 45px rgb(255 255 255 / 5%), 0 0 0 90px rgb(255 255 255 / 4%);
+  content: '';
+  pointer-events: none;
+}
+
+.customer-service-banner > * {
+  z-index: 1;
+}
+
+.customer-service-banner > p,
+.customer-service-section-heading > p {
+  margin: 0 0 10px;
+  color: #ffc44d;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+}
+
+.customer-service-banner h1 {
+  margin: 0;
+  font-size: clamp(34px, 5vw, 54px);
+  line-height: 1.08;
+}
+
+.customer-service-banner > span {
+  max-width: 520px;
+  margin-top: 14px;
+  color: rgb(255 255 255 / 82%);
+  font-size: 16px;
+}
+
+.customer-service-banner > a,
+.customer-service-contact > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 12px 18px;
+  border-radius: 9px;
+  color: #071a3d;
+  background: #ffc44d;
+  font-weight: 750;
+  text-decoration: none;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.customer-service-banner > a:hover,
+.customer-service-contact > a:hover {
+  transform: translateY(-2px);
+  background: #f5a623;
+}
+
+.customer-service-topics,
+.customer-service-faq {
+  padding-top: 54px;
+  scroll-margin-top: 110px;
+}
+
+.customer-service-section-heading {
+  margin-bottom: 22px;
+}
+
+.customer-service-section-heading h2,
+.customer-service-contact h2 {
+  margin: 0;
+  color: #071a3d;
+  font-size: clamp(24px, 3vw, 32px);
+}
+
+.customer-service-topic-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.customer-service-topic {
+  display: grid;
+  grid-template-columns: 48px 1fr 20px;
+  align-items: center;
+  gap: 15px;
+  min-height: 110px;
+  padding: 20px;
+  border: 1px solid #e7edf4;
+  border-radius: 14px;
+  color: inherit;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(7 26 61 / 4%);
+  text-decoration: none;
+  transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.customer-service-topic:hover {
+  transform: translateY(-2px);
+  border-color: #0969d8;
+  box-shadow: 0 12px 28px rgb(7 26 61 / 9%);
+}
+
+.customer-service-topic-icon {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 12px;
+  color: #0969d8;
+  background: #eaf3ff;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.customer-service-topic strong,
+.customer-service-topic small {
+  display: block;
+}
+
+.customer-service-topic strong {
+  margin-bottom: 5px;
+  color: #071a3d;
+  font-size: 16px;
+}
+
+.customer-service-topic small {
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.customer-service-topic-arrow {
+  color: #0969d8;
+  font-size: 20px;
+}
+
+.customer-service-questions {
+  overflow: hidden;
+  border: 1px solid #e7edf4;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.customer-service-questions details + details {
+  border-top: 1px solid #e7edf4;
+}
+
+.customer-service-questions summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 19px 22px;
+  color: #071a3d;
+  cursor: pointer;
+  font-weight: 700;
+  list-style: none;
+}
+
+.customer-service-questions summary::-webkit-details-marker {
+  display: none;
+}
+
+.customer-service-questions summary span {
+  color: #0969d8;
+  font-size: 22px;
+  transition: transform 160ms ease;
+}
+
+.customer-service-questions details[open] summary span {
+  transform: rotate(45deg);
+}
+
+.customer-service-questions details > p {
+  margin: -4px 22px 20px;
+  color: #667085;
+  line-height: 1.65;
+}
+
+.customer-service-contact {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 48px;
+  padding: 24px;
+  border: 1px solid #e7edf4;
+  border-radius: 16px;
+  background: #f4f7fa;
+}
+
+.customer-service-contact-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  color: #071a3d;
+  background: linear-gradient(135deg, #f5a623, #ffc44d);
+  font-size: 22px;
+}
+
+.customer-service-contact h2 {
+  font-size: 20px;
+}
+
+.customer-service-contact p {
+  margin: 6px 0 0;
+  color: #667085;
+}
+
+.customer-service-contact > a {
+  flex: 0 0 auto;
+  margin: 0 0 0 auto;
+  color: #fff;
+  background: #0969d8;
+}
+
+.customer-service-contact > a:hover {
+  background: #1689f5;
+}
+
+@media (max-width: 680px) {
+  .customer-service-page {
+    width: min(100% - 28px, 1180px);
+    padding-top: 18px;
+  }
+
+  .customer-service-banner {
+    min-height: 250px;
+    padding: 32px 24px;
+  }
+
+  .customer-service-topic-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-service-contact {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .customer-service-contact > div {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .customer-service-contact > a {
+    margin-left: 66px;
+  }
+}
