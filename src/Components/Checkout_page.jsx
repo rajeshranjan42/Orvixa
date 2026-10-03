@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { fetchApiJson } from '../utils/apiResponse'
 import './checkout_page.css'
 
 const formatPrice = (amount) =>
@@ -32,14 +33,11 @@ function loadRazorpay() {
 }
 
 async function requestApi(path, payload) {
-  const response = await fetch(path, {
+  return fetchApiJson(path, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(payload),
-  })
-  const result = await response.json()
-  if (!response.ok) throw new Error(result.error ?? 'Checkout could not be completed.')
-  return result
+  }, 'Orvixa checkout backend', 'Start it with `npm run dev:payment`.')
 }
 
 export const CheckoutPage = ({ cart, onClearCart, onBack }) => {

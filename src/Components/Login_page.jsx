@@ -8,14 +8,11 @@ const RESEND_DELAY = 30
 
 function getAuthErrorMessage(message) {
   const normalized = message.toLowerCase()
-  if (normalized.includes('user not found') || normalized.includes('invalid login credentials')) {
-    return 'We couldn’t find an account with those details. Switch to Create account to register.'
-  }
   if (normalized.includes('rate limit') || normalized.includes('too many requests')) {
     return 'Too many OTP requests. Please wait a few minutes and try again.'
   }
   if (normalized.includes('phone') && normalized.includes('provider')) {
-    return 'Phone OTP is not enabled yet. Enable phone sign-in and configure an SMS provider in Supabase.'
+    return 'Supabase rejected phone OTP because phone authentication is disabled or has no SMS provider. In your Supabase Dashboard, open Authentication → Sign In / Providers → Phone, enable Phone, configure an SMS provider (such as Twilio), and save. Then retry.'
   }
   if (normalized.includes('email') && normalized.includes('provider')) {
     return 'Email sign-in is not enabled for this Supabase project yet.'
@@ -23,7 +20,7 @@ function getAuthErrorMessage(message) {
   return message
 }
 
-export const LoginPage = ({ client, user }) => {
+export const LoginPage = ({ client, user, isLoading = false, onAuthChange = () => {} }) => {
   const [mode, setMode] = useState('login')
   const [method, setMethod] = useState('email')
   const [step, setStep] = useState('details')
@@ -57,7 +54,7 @@ export const LoginPage = ({ client, user }) => {
     event.preventDefault()
     if (busy) return
     if (!isConfigured) {
-      setError('OTP sending is not enabled because this app has no Supabase project URL or anon key. Add both VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env, then restart the dev server.')
+      setError('Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env, then restart Vite to enable sign-in.')
       return
     }
 
@@ -72,7 +69,6 @@ export const LoginPage = ({ client, user }) => {
       const { error: authError } = method === 'email'
         ? await client.auth.signInWithOtp({ email: normalizedAddress, options })
         : await client.auth.signInWithOtp({ phone: normalizedAddress, options })
-
       if (authError) throw authError
       setDestination(normalizedAddress)
       setOtp('')
@@ -98,6 +94,7 @@ export const LoginPage = ({ client, user }) => {
         : await client.auth.verifyOtp({ phone: destination, token: otp, type: 'sms' })
       if (authError) throw authError
       if (!data.session) throw new Error('The code was accepted, but no signed-in session was returned. Please try again.')
+      onAuthChange(data.session.user)
       setStep('success')
       setNotice('Your account is verified and ready.')
     } catch (authError) {
@@ -110,7 +107,7 @@ export const LoginPage = ({ client, user }) => {
   const resendOtp = async () => {
     if (secondsLeft > 0 || busy) return
     if (!isConfigured) {
-      setError('OTP sending is not enabled because Supabase is not configured. Add your project URL and anon key to .env, then restart the dev server.')
+      setError('Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env, then restart Vite to enable sign-in.')
       return
     }
     setBusy(true)
@@ -138,10 +135,16 @@ export const LoginPage = ({ client, user }) => {
     if (!client || busy) return
     setBusy(true)
     setError('')
-    const { error: authError } = await client.auth.signOut()
-    if (authError) setError(authError.message)
-    setBusy(false)
-    setStep('details')
+    try {
+      const { error: authError } = await client.auth.signOut()
+      if (authError) throw authError
+      onAuthChange(null)
+      setStep('details')
+    } catch (authError) {
+      setError(authError.message || 'Could not sign out. Please try again.')
+    } finally {
+      setBusy(false)
+    }
   }
 
   const resetToDetails = () => {
@@ -174,7 +177,13 @@ export const LoginPage = ({ client, user }) => {
         </div>
 
         <div className="login-form-panel">
-          {user ? (
+          {isLoading ? (
+            <section className="login-account-card" role="status" aria-live="polite">
+              <span className="login-spinner login-loading-spinner" aria-hidden="true" />
+              <p className="login-eyebrow">WELCOME BACK</p>
+              <h2>Checking your account…</h2>
+            </section>
+          ) : user ? (
             <section className="login-account-card" aria-live="polite">
               <span className="login-success-mark" aria-hidden="true">✓</span>
               <p className="login-eyebrow">YOUR ORVIXA ACCOUNT</p>
@@ -210,8 +219,8 @@ export const LoginPage = ({ client, user }) => {
 
               {!isConfigured && (
                 <div className="login-setup-notice" role="status">
-                  <strong>Authentication needs setup</strong>
-                  <span>Add your Supabase project URL and anon key to the local <code>.env</code> file, then restart Vite. OTPs are not simulated or stored in the browser.</span>
+                  <strong>Supabase authentication needs setup</strong>
+                  <span>Add your Supabase project URL and anon key to <code>.env</code>, then restart Vite. Enable email or phone OTP in the Supabase dashboard.</span>
                 </div>
               )}
 
@@ -254,7 +263,7 @@ export const LoginPage = ({ client, user }) => {
                   )}
 
                   {error && <p className="login-error" role="alert">{error}</p>}
-                  <button className="login-primary-button" type="submit" disabled={busy}>
+                  <button className="login-primary-button" type="submit" disabled={!isConfigured || busy}>
                     {busy ? <><span className="login-spinner" aria-hidden="true" /> Sending code…</> : 'Send one-time code'}
                     {!busy && <span aria-hidden="true">→</span>}
                   </button>
@@ -286,7 +295,7 @@ export const LoginPage = ({ client, user }) => {
                   </label>
                   {notice && <p className="login-notice" role="status">{notice}</p>}
                   {error && <p className="login-error" role="alert">{error}</p>}
-                  <button className="login-primary-button" type="submit" disabled={busy || otp.length !== OTP_LENGTH}>
+                  <button className="login-primary-button" type="submit" disabled={!isConfigured || busy || otp.length !== OTP_LENGTH}>
                     {busy ? <><span className="login-spinner" aria-hidden="true" /> Verifying…</> : 'Verify & sign in'}
                     {!busy && <span aria-hidden="true">→</span>}
                   </button>

@@ -168,6 +168,7 @@ function App() {
   const [searchCategory, setSearchCategory] = useState(initialSearch.category)
   const [cart, setCart] = useState(getInitialCart)
   const [authUser, setAuthUser] = useState(null)
+  const [authLoaded, setAuthLoaded] = useState(!supabase)
   const [adminProducts, setAdminProducts] = useState(() => readLocalData(
     ADMIN_PRODUCTS_KEY,
     defaultAdminProducts,
@@ -217,18 +218,26 @@ function App() {
   useEffect(() => {
     if (!supabase) return undefined
 
-    supabase.auth.getSession().then(({ data, error }) => {
-      if (error) {
+    let active = true
+    supabase.auth.getSession()
+      .then(({ data, error }) => {
+        if (error) throw error
+        if (active) setAuthUser(data.session?.user ?? null)
+      })
+      .catch((error) => {
         console.error('Could not restore the Supabase authentication session.', error)
-        return
-      }
-      setAuthUser(data.session?.user ?? null)
-    })
+      })
+      .finally(() => {
+        if (active) setAuthLoaded(true)
+      })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setAuthUser(session?.user ?? null)
     })
-    return () => subscription.unsubscribe()
+    return () => {
+      active = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   useEffect(() => {
@@ -489,7 +498,7 @@ function App() {
         ) : selectedPage === 'checkout' ? (
           <CheckoutPage cart={cart} onClearCart={() => setCart([])} onBack={navigateToCart} />
         ) : selectedPage === 'login' ? (
-          <LoginPage client={supabase} user={authUser} />
+          <LoginPage client={supabase} user={authUser} isLoading={!authLoaded} onAuthChange={setAuthUser} />
         ) : selectedPage === 'returns-orders' ? (
           <ReturnsOrdersPage orders={adminOrders} />
         ) : selectedPage === 'search' ? (

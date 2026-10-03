@@ -575,6 +575,13 @@
   animation: login-spin 700ms linear infinite;
 }
 
+.login-loading-spinner {
+  width: 26px;
+  height: 26px;
+  border-color: #d8e8fb;
+  border-top-color: var(--color-royal-blue);
+}
+
 .login-account-card {
   display: grid;
   justify-items: center;

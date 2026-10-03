@@ -12,11 +12,11 @@ The checkout intentionally rejects live Razorpay keys. Product prices and order 
 
 ## Supabase email and phone OTP authentication
 
-1. Copy `.env.example` to `.env` (or append the variables to the `.env` already used for Razorpay) and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from the Supabase project API settings. The anon/publishable key is intended for browser use; never put a Supabase service-role key in a `VITE_` variable.
-2. In Supabase Authentication settings, enable Email and Phone providers. Configure an SMS provider for phone OTP. To send a numeric email OTP, set the Supabase email template to include `{{ .Token }}` rather than only a magic-link action URL.
-3. Add your local development URL to Supabase's allowed redirect/site URLs if required, restart Vite after editing `.env`, then open `/login`.
+1. Copy `.env.example` to `.env` and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` using the Supabase project API settings. The anon/publishable key is designed for browser use; never expose a Supabase service-role key in a `VITE_` variable.
+2. In Supabase Authentication settings, enable Email and Phone providers. Configure an SMS provider for phone OTP. To send numeric email codes, make sure the Supabase email template includes `{{ .Token }}`.
+3. Add the local development URL to Supabase's allowed site URLs if required, restart Vite after changing `.env`, then open `/login`.
 
-The login page supports sign-in and registration by email OTP or Indian mobile SMS OTP. Supabase creates the session only after the code is verified; without project configuration the form stays safely disabled instead of pretending an OTP was sent.
+Login and registration use Supabase Auth directly, so no separate Orvixa auth server is needed. Email and phone OTP delivery depends on your Supabase provider configuration and limits.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
