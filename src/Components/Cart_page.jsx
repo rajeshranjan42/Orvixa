@@ -1,18 +1,13 @@
 import './cart_page.css'
 import { appPath } from '../utils/paths'
+import { formatPrice, parsePrice, toPaise } from '../utils/price'
 
-const formatPrice = (amount) =>
-  new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(amount)
+const getLineTotal = (item) => toPaise(parsePrice(item.price)) * item.quantity
 
-const getUnitPrice = (product) => Number(String(product.price).replace(/[^\d]/g, '')) || 0
 
 export const CartPage = ({ cart, onQuantityChange, onRemove, onClear, onCheckout }) => {
   const itemCount = cart.reduce((total, item) => total + item.quantity, 0)
-  const subtotal = cart.reduce((total, item) => total + getUnitPrice(item) * item.quantity, 0)
+  const subtotal = cart.reduce((total, item) => total + getLineTotal(item), 0) / 100
 
   return (
     <main className="cart-page">
@@ -46,7 +41,7 @@ export const CartPage = ({ cart, onQuantityChange, onRemove, onClear, onCheckout
         <div className="cart-layout">
           <section className="cart-items" aria-label="Cart items">
             {cart.map((item) => (
-              <article className="cart-item" key={`${item.brand ?? ''}-${item.name}`}>
+              <article className="cart-item" key={item.cartKey}>
                 <a className="cart-item-image" href={appPath('/')} aria-label={`Continue shopping for ${item.name}`}>
                   <img src={item.image} alt="" />
                 </a>
@@ -64,7 +59,7 @@ export const CartPage = ({ cart, onQuantityChange, onRemove, onClear, onCheckout
                       Qty
                       <select
                         value={item.quantity}
-                        onChange={(event) => onQuantityChange(item.name, item.brand, Number(event.target.value))}
+                        onChange={(event) => onQuantityChange(item.cartKey, Number(event.target.value))}
                         aria-label={`Quantity for ${item.name}`}
                       >
                         {Array.from({ length: 10 }, (_, index) => index + 1).map((quantity) => (
@@ -73,13 +68,13 @@ export const CartPage = ({ cart, onQuantityChange, onRemove, onClear, onCheckout
                       </select>
                     </label>
                     <span aria-hidden="true" />
-                    <button type="button" onClick={() => onRemove(item.name, item.brand)}>
+                    <button type="button" onClick={() => onRemove(item.cartKey)}>
                       Remove
                     </button>
                   </div>
                 </div>
                 <strong className="cart-item-total">
-                  {formatPrice(getUnitPrice(item) * item.quantity)}
+                  {formatPrice(getLineTotal(item) / 100)}
                 </strong>
               </article>
             ))}

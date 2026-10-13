@@ -10,3 +10,7 @@ export function appPathname(pathname = window.location.pathname) {
   const relativePath = pathname.slice(baseUrl.length)
   return relativePath ? `/${relativePath}` : '/'
 }
+
+export function resolveHref(href = '/') {
+  return href.startsWith('/') && !href.startsWith('//') ? appPath(href) : href
+}

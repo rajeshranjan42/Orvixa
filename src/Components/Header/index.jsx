@@ -37,10 +37,7 @@ const categoryPaths = {
   'Sign in': '/login',
 }
 
-const getNavigationHref = (label) =>
-  categoryPaths[label]
-    ? appPath(categoryPaths[label])
-    : `#${label.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}`
+const getNavigationHref = (label) => appPath(categoryPaths[label] ?? '/')
 
 const menuSections = [
   {
@@ -54,9 +51,6 @@ const menuSections = [
       'TV, Appliances & Electronics',
       'Home & Kitchen',
       'Fashion & Beauty',
-      'Sports & Outdoors',
-      'Toys, Kids & Baby',
-      'Books & Stationery',
     ],
   },
   {

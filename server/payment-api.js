@@ -2,15 +2,30 @@ import { createServer } from 'node:http'
 import { Buffer } from 'node:buffer'
 import { randomUUID } from 'node:crypto'
 import process from 'node:process'
-import { isValidPaymentSignature } from './payment-utils.js'
+import { isValidOrderAmount, isValidPaymentSignature, parseAllowedOrigins } from './payment-utils.js'
 
 const port = Number(process.env.PAYMENT_API_PORT ?? 3001)
+const host = process.env.PAYMENT_API_HOST ?? '127.0.0.1'
+const allowedOrigins = parseAllowedOrigins(process.env.PAYMENT_ALLOWED_ORIGINS)
 const keyId = process.env.RAZORPAY_KEY_ID ?? ''
 const keySecret = process.env.RAZORPAY_KEY_SECRET ?? ''
 const isTestMode = process.env.PAYMENT_MODE === 'test' && keyId.startsWith('rzp_test_')
 
+function corsHeaders(request) {
+  const origin = request.headers.origin
+  if (!origin || !allowedOrigins.includes(origin)) return {}
+  return {
+    'access-control-allow-origin': origin,
+    'access-control-allow-methods': 'GET, POST, OPTIONS',
+    'access-control-allow-headers': 'content-type',
+    'access-control-max-age': '600',
+    vary: 'Origin',
+  }
+}
+
 function respond(response, status, payload) {
   response.writeHead(status, {
+    ...response.corsHeaders,
     'content-type': 'application/json; charset=utf-8',
     'cache-control': 'no-store',
     'x-content-type-options': 'nosniff',
@@ -62,6 +77,13 @@ async function razorpayRequest(path, method, payload) {
 
 const server = createServer(async (request, response) => {
   const url = new URL(request.url ?? '/', 'http://127.0.0.1')
+  response.corsHeaders = corsHeaders(request)
+
+  if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/')) {
+    response.writeHead(204, response.corsHeaders)
+    response.end()
+    return
+  }
 
   if (request.method === 'GET' && url.pathname === '/api/health') {
     respond(response, 200, { ready: isTestMode && Boolean(keySecret), mode: 'test' })
@@ -87,8 +109,8 @@ const server = createServer(async (request, response) => {
 
     if (url.pathname === '/api/checkout/create-order') {
       const { amount, customer } = body
-      if (!Number.isSafeInteger(amount) || amount < 100 || amount > 100_000_000 || amount % 100 !== 0) {
-        respond(response, 400, { error: 'Order amount must be a whole-rupee amount between ₹1 and ₹10,00,000.' })
+      if (!isValidOrderAmount(amount)) {
+        respond(response, 400, { error: 'Order amount must be a whole number of paise between ₹1 and ₹10,00,000.' })
         return
       }
 
@@ -135,15 +157,26 @@ const server = createServer(async (request, response) => {
       return
     }
 
-    const [order, payment] = await Promise.all([
+    const [order, fetchedPayment] = await Promise.all([
       razorpayRequest(`/orders/${encodeURIComponent(orderId)}`, 'GET'),
       razorpayRequest(`/payments/${encodeURIComponent(paymentId)}`, 'GET'),
     ])
 
-    if (payment.order_id !== order.id
-      || payment.amount !== order.amount
-      || payment.currency !== order.currency
-      || payment.status !== 'captured') {
+    if (fetchedPayment.order_id !== order.id
+      || fetchedPayment.amount !== order.amount
+      || fetchedPayment.currency !== order.currency) {
+      respond(response, 409, { error: 'The payment does not match this order. Check the Razorpay dashboard before retrying.' })
+      return
+    }
+
+    const payment = fetchedPayment.status === 'authorized'
+      ? await razorpayRequest(`/payments/${encodeURIComponent(paymentId)}/capture`, 'POST', {
+        amount: order.amount,
+        currency: order.currency,
+      })
+      : fetchedPayment
+
+    if (payment.status !== 'captured') {
       respond(response, 409, { error: 'The payment is not confirmed as captured. Check the Razorpay dashboard before retrying.' })
       return
     }
@@ -163,8 +196,8 @@ const server = createServer(async (request, response) => {
   }
 })
 
-server.listen(port, '127.0.0.1', () => {
-  console.info(`Orvixa Razorpay test API listening on http://127.0.0.1:${port}`)
+server.listen(port, host, () => {
+  console.info(`Orvixa Razorpay test API listening on http://${host}:${port}`)
   if (!isTestMode || !keySecret) {
     console.warn('Payment API is disabled until PAYMENT_MODE=test and Razorpay test credentials are configured.')
   }

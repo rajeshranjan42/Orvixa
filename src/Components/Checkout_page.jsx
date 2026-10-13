@@ -1,16 +1,13 @@
 import { useMemo, useState } from 'react'
 import { fetchApiJson } from '../utils/apiResponse'
 import { appPath } from '../utils/paths'
+import { formatPrice, parsePrice, toPaise } from '../utils/price'
 import './checkout_page.css'
 
-const formatPrice = (amount) =>
-  new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(amount)
+const getLineTotal = (item) => toPaise(parsePrice(item.price)) * item.quantity
 
-const getUnitPrice = (product) => Number(String(product.price).replace(/[^\d]/g, '')) || 0
+const paymentApiBase = (import.meta.env.VITE_PAYMENT_API_URL ?? '').replace(/\/+$/, '')
+const paymentsUnavailable = import.meta.env.VITE_STATIC_DEPLOY === 'true' && !paymentApiBase
 
 let razorpayScriptPromise
 
@@ -34,7 +31,7 @@ function loadRazorpay() {
 }
 
 async function requestApi(path, payload) {
-  return fetchApiJson(path, {
+  return fetchApiJson(`${paymentApiBase}${path}`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(payload),
@@ -53,10 +50,11 @@ export const CheckoutPage = ({ cart, onClearCart, onBack }) => {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [confirmation, setConfirmation] = useState(null)
-  const amount = useMemo(
-    () => cart.reduce((total, item) => total + getUnitPrice(item) * item.quantity, 0),
+  const amountInPaise = useMemo(
+    () => cart.reduce((total, item) => total + getLineTotal(item), 0),
     [cart],
   )
+  const amount = amountInPaise / 100
 
   const updateCustomer = (event) => {
     setCustomer((current) => ({ ...current, [event.target.name]: event.target.value }))
@@ -64,7 +62,7 @@ export const CheckoutPage = ({ cart, onClearCart, onBack }) => {
 
   const placeOrder = async (event) => {
     event.preventDefault()
-    if (submitting || cart.length === 0) return
+    if (submitting || paymentsUnavailable || cart.length === 0) return
 
     setSubmitting(true)
     setError('')
@@ -72,7 +70,7 @@ export const CheckoutPage = ({ cart, onClearCart, onBack }) => {
     try {
       await loadRazorpay()
       const order = await requestApi('/api/checkout/create-order', {
-        amount: amount * 100,
+        amount: amountInPaise,
         customer,
       })
 
@@ -205,8 +203,13 @@ export const CheckoutPage = ({ cart, onClearCart, onBack }) => {
           </section>
 
           {error && <p className="checkout-error" role="alert">{error}</p>}
+          {paymentsUnavailable && (
+            <p className="checkout-error" role="status">
+              Online payment is not available on this static demo site. Run the storefront locally with <code>npm run dev:payment</code>, or configure <code>VITE_PAYMENT_API_URL</code> for a hosted payment API.
+            </p>
+          )}
           <p className="checkout-test-notice">Test mode only. Do not enter real payment details; use Razorpay’s test credentials.</p>
-          <button className="checkout-submit" type="submit" disabled={submitting}>
+          <button className="checkout-submit" type="submit" disabled={submitting || paymentsUnavailable}>
             {submitting ? 'Connecting to Razorpay…' : `Pay ${formatPrice(amount)}`}
           </button>
         </form>
@@ -214,10 +217,10 @@ export const CheckoutPage = ({ cart, onClearCart, onBack }) => {
         <aside className="checkout-order-summary">
           <p className="checkout-eyebrow">YOUR ORDER</p>
           {cart.map((item) => (
-            <div className="checkout-summary-item" key={`${item.brand ?? ''}-${item.name}`}>
+            <div className="checkout-summary-item" key={item.cartKey}>
               <div className="checkout-summary-image"><img src={item.image} alt="" /></div>
               <div><strong>{item.name}</strong><span>Qty {item.quantity}</span></div>
-              <strong>{formatPrice(getUnitPrice(item) * item.quantity)}</strong>
+              <strong>{formatPrice(getLineTotal(item) / 100)}</strong>
             </div>
           ))}
           <div className="checkout-summary-total"><span>Total</span><strong>{formatPrice(amount)}</strong></div>

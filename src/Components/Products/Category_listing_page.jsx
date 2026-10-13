@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import './new_arrivals.css'
 import { appPath } from '../../utils/paths'
+import { comparePrices } from '../../utils/price'
 
 const categoryMarks = {
   'deals-listing': 'DEAL',
@@ -30,9 +31,9 @@ export const CategoryListingPage = ({
   const sortedProducts = useMemo(() => {
     const items = [...products]
     if (sortBy === 'price-low') {
-      items.sort((a, b) => Number(a.price.replace(/[^\d]/g, '')) - Number(b.price.replace(/[^\d]/g, '')))
+      items.sort(comparePrices)
     } else if (sortBy === 'price-high') {
-      items.sort((a, b) => Number(b.price.replace(/[^\d]/g, '')) - Number(a.price.replace(/[^\d]/g, '')))
+      items.sort((a, b) => comparePrices(b, a))
     } else if (sortBy === 'rating') {
       items.sort((a, b) => Number(b.rating) - Number(a.rating))
     }
