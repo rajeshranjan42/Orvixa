@@ -6,10 +6,10 @@ const footerGroups = [
   {
     title: 'Shop',
     links: [
-      ['Popular products', '#popular-products-title'],
-      ['Latest arrivals', '#latest-products-title'],
-      ['Featured picks', '#featured-products-title'],
-      ['Today’s deals', '#today-s-deals'],
+      ['Popular products', '/#popular-products-title'],
+      ['Latest arrivals', '/#latest-products-title'],
+      ['Featured picks', '/#featured-products-title'],
+      ['Today’s deals', '/category/todays-deals'],
     ],
   },
   {
@@ -68,7 +68,7 @@ export const Footer = () => {
             <ul>
               {group.links.map(([label, href]) => (
                 <li key={label}>
-                  <a href={href.startsWith('/') ? appPath(href) : href}>{label}</a>
+                  <a href={appPath(href)}>{label}</a>
                 </li>
               ))}
             </ul>

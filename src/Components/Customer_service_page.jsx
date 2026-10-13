@@ -1,5 +1,5 @@
 import './customer_service.css'
-import { appPath } from '../utils/paths'
+import { appPath, resolveHref } from '../utils/paths'
 
 const helpTopics = [
   {
@@ -86,7 +86,7 @@ export const CustomerServicePage = ({ content }) => {
         </div>
         <div className="customer-service-topic-grid">
           {topics.map((topic) => (
-            <a className="customer-service-topic" href={appPath(topic.href)} key={topic.title}>
+            <a className="customer-service-topic" href={resolveHref(topic.href)} key={topic.title}>
               <span className="customer-service-topic-icon" aria-hidden="true">{topic.icon}</span>
               <span>
                 <strong>{topic.title}</strong>

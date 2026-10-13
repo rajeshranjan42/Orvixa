@@ -33,6 +33,8 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_PAYMENT_API_URL: ${{ vars.VITE_PAYMENT_API_URL }}
+          VITE_STATIC_DEPLOY: 'true'
         run: |
           if [ -z "${VITE_SUPABASE_URL:-}" ]; then
             VITE_SUPABASE_URL="$(sed -n 's/^VITE_SUPABASE_URL=//p' .env.example | head -n 1)"

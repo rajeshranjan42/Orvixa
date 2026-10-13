@@ -1,4 +1,5 @@
 import './promo_banner_section.css'
+import { resolveHref } from '../../utils/paths'
 
 export const PromoBannerSection = ({ banners = [] }) => {
   const featuredBanner = banners.find((banner) => banner.placement === 'featured')
@@ -19,7 +20,7 @@ export const PromoBannerSection = ({ banners = [] }) => {
             <p className="promo-banner-eyebrow">{featuredBanner.eyebrow}</p>
             <h2>{featuredBanner.title}</h2>
             <p className="promo-banner-price"><strong>{featuredBanner.offer}</strong></p>
-            <a className="promo-banner-button" href={featuredBanner.ctaHref}>
+            <a className="promo-banner-button" href={resolveHref(featuredBanner.ctaHref)}>
               {featuredBanner.ctaLabel}
             </a>
           </div>
@@ -35,7 +36,7 @@ export const PromoBannerSection = ({ banners = [] }) => {
                 <p className="promo-banner-eyebrow">{banner.eyebrow}</p>
                 <h2>{banner.title}</h2>
                 <p className="promo-banner-price"><strong>{banner.offer}</strong></p>
-                <a href={banner.ctaHref}>{banner.ctaLabel} <span aria-hidden="true">→</span></a>
+                <a href={resolveHref(banner.ctaHref)}>{banner.ctaLabel} <span aria-hidden="true">→</span></a>
               </div>
             </article>
           ))}

@@ -3,6 +3,7 @@ import './admin_dashboard.css'
 import { appPath } from '../utils/paths'
 import { readImageUpload } from '../utils/imageUpload'
 import { adminPages } from '../data/adminPageDefaults'
+import { normalizePriceLabel, parsePrice } from '../utils/price'
 
 const collectionNames = {
   popular: 'Popular',
@@ -12,7 +13,7 @@ const collectionNames = {
 
 const orderStatuses = ['Placed', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled']
 
-const priceNumber = (price) => Number(String(price).replace(/[^\d]/g, '')) || 0
+const priceNumber = parsePrice
 
 export const AdminDashboard = ({
   products,
@@ -99,8 +100,8 @@ export const AdminDashboard = ({
         ...(additionalImages.length ? {
           additionalImages,
         } : {}),
-        price: price.startsWith('₹') ? price : `₹${price}`,
-        ...(oldPrice ? { oldPrice: oldPrice.startsWith('₹') ? oldPrice : `₹${oldPrice}` } : {}),
+        price: normalizePriceLabel(price),
+        ...(oldPrice ? { oldPrice: normalizePriceLabel(oldPrice) } : {}),
         ...(description ? { description } : {}),
         ...(highlights.length ? { highlights } : {}),
         rating: '0',
@@ -168,6 +169,7 @@ export const AdminDashboard = ({
     const formData = new FormData(form)
     const title = String(formData.get('title') ?? '').trim()
     const category = String(formData.get('category') ?? '').trim()
+    const offer = String(formData.get('offer') ?? '').trim()
     const imageFiles = formData.getAll('images').filter(
       (file) => file instanceof File && file.size > 0,
     )
@@ -184,6 +186,7 @@ export const AdminDashboard = ({
         id: `banner-${batchId}-${index}`,
         title: images.length === 1 ? title : `${title} ${index + 1}`,
         category,
+        ...(offer ? { offer } : {}),
         image,
         tone: String(formData.get('tone') ?? 'dark'),
       }))
@@ -204,6 +207,7 @@ export const AdminDashboard = ({
     const formData = new FormData(form)
     const title = String(formData.get('title') ?? '').trim()
     const category = String(formData.get('category') ?? '').trim()
+    const offer = String(formData.get('offer') ?? '').trim()
     const imageFile = formData.get('image')
 
     if (!title || !category) {
@@ -216,7 +220,7 @@ export const AdminDashboard = ({
         ? await readImageUpload(imageFile)
         : currentImage
       setBanners((current) => current.map((banner) => banner.id === bannerId
-        ? { ...banner, title, category, image, tone: String(formData.get('tone') ?? 'dark') }
+        ? { ...banner, title, category, offer, image, tone: String(formData.get('tone') ?? 'dark') }
         : banner))
       setNotice('Banner changes saved.')
     } catch (uploadError) {
@@ -488,8 +492,8 @@ export const AdminDashboard = ({
         brand,
         image,
         ...(additionalImages.length ? { hoverImage: additionalImages[0], additionalImages } : {}),
-        price: price.startsWith('₹') ? price : `₹${price}`,
-        ...(oldPrice ? { oldPrice: oldPrice.startsWith('₹') ? oldPrice : `₹${oldPrice}` } : {}),
+        price: normalizePriceLabel(price),
+        ...(oldPrice ? { oldPrice: normalizePriceLabel(oldPrice) } : {}),
         rating: '0',
         reviews: '0',
         badge: 'New',
@@ -547,9 +551,9 @@ export const AdminDashboard = ({
                 hoverImage: additionalImages[0],
                 additionalImages,
               } : {}),
-              price: price.startsWith('₹') ? price : `₹${price}`,
-              oldPrice: oldPrice ? (oldPrice.startsWith('₹') ? oldPrice : `₹${oldPrice}`) : '',
-              originalPrice: oldPrice ? (oldPrice.startsWith('₹') ? oldPrice : `₹${oldPrice}`) : '',
+              price: normalizePriceLabel(price),
+              oldPrice: oldPrice ? normalizePriceLabel(oldPrice) : '',
+              originalPrice: oldPrice ? normalizePriceLabel(oldPrice) : '',
             }
             : product),
       }))
@@ -912,6 +916,7 @@ export const AdminDashboard = ({
           <form className="admin-form admin-banner-add-form" onSubmit={addBanner}>
             <label>Slide title<input name="title" required maxLength="70" placeholder="Offer (slide number is added for batches)" /></label>
             <label>Category or offer<input name="category" required maxLength="70" /></label>
+            <label>Offer line <span>(optional)</span><input name="offer" maxLength="70" placeholder="Get up to ₹150 cashback*" /></label>
             <label>Slide images<input name="images" type="file" accept="image/*" multiple required /></label>
             <label>Text contrast<select name="tone" defaultValue="dark"><option value="dark">Dark text</option><option value="light">Light text</option></select></label>
             <button className="admin-primary-button" type="submit">Add slide(s)</button>
@@ -923,6 +928,7 @@ export const AdminDashboard = ({
                 <img src={banner.image} alt="" />
                 <label>Title<input name="title" defaultValue={banner.title} required maxLength="70" /></label>
                 <label>Category or offer<input name="category" defaultValue={banner.category} required maxLength="70" /></label>
+                <label>Offer line <span>(optional)</span><input name="offer" defaultValue={banner.offer ?? ''} maxLength="70" /></label>
                 <label>Replace banner image <span>(optional)</span><input name="image" type="file" accept="image/*" /></label>
                 <label>Text contrast<select name="tone" defaultValue={banner.tone}><option value="dark">Dark text</option><option value="light">Light text</option></select></label>
                 <div className="admin-banner-actions">

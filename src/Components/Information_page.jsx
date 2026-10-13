@@ -1,5 +1,5 @@
 import './information_page.css'
-import { appPath } from '../utils/paths'
+import { appPath, resolveHref } from '../utils/paths'
 
 const pageContent = {
   'our-story': {
@@ -173,7 +173,7 @@ export const InformationPage = ({ page }) => {
           <section className="information-section" key={section.title}>
             <h2>{section.title}</h2>
             {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-            {section.link && <a href={section.link}>{section.linkLabel} <span aria-hidden="true">→</span></a>}
+            {section.link && <a href={resolveHref(section.link)}>{section.linkLabel} <span aria-hidden="true">→</span></a>}
           </section>
         ))}
       </div>
@@ -184,7 +184,7 @@ export const InformationPage = ({ page }) => {
             <h2>{content.calloutTitle}</h2>
             <p>{content.calloutText}</p>
           </div>
-          <a href={content.calloutHref}>{content.calloutLabel} <span aria-hidden="true">→</span></a>
+          <a href={resolveHref(content.calloutHref)}>{content.calloutLabel} <span aria-hidden="true">→</span></a>
         </aside>
       )}
 

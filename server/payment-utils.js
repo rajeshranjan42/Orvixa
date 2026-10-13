@@ -15,3 +15,14 @@ export function isValidPaymentSignature(orderId, paymentId, signature, secret) {
   return expectedBuffer.length === providedBuffer.length
     && timingSafeEqual(expectedBuffer, providedBuffer)
 }
+
+export const MIN_ORDER_AMOUNT = 100
+export const MAX_ORDER_AMOUNT = 100_000_000
+
+export function isValidOrderAmount(amount) {
+  return Number.isSafeInteger(amount) && amount >= MIN_ORDER_AMOUNT && amount <= MAX_ORDER_AMOUNT
+}
+
+export function parseAllowedOrigins(value = '') {
+  return value.split(',').map((origin) => origin.trim().replace(/\/+$/, '')).filter(Boolean)
+}

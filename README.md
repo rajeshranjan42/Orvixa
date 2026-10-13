@@ -8,6 +8,12 @@ Checkout uses Razorpay Standard Checkout for payment methods enabled on the Razo
 2. In one terminal, run `npm run dev:payment`.
 3. In another terminal, run `npm run dev` and open the local storefront.
 
+Prices may include paise (for example `₹1,299.50`); the browser sends the order total to the API in whole paise. If a payment is only `authorized` (auto-capture disabled on the Razorpay account), the API captures it during verification.
+
+### Hosted storefront (GitHub Pages)
+
+GitHub Pages serves static files only, so checkout is disabled on the hosted site unless a payment API is deployed separately. To enable it, run `server/payment-api.js` on a Node host with `PAYMENT_API_HOST=0.0.0.0` and `PAYMENT_ALLOWED_ORIGINS=https://rajeshranjan42.github.io`, then set the `VITE_PAYMENT_API_URL` repository variable (Settings → Secrets and variables → Actions → Variables) to that API's base URL.
+
 The checkout intentionally rejects live Razorpay keys. Product prices and order history are currently managed in browser storage, not a trusted persistent catalog/database, so this integration is for test-mode checkout only. Do not use it to accept real payments or treat browser-local order data as a production order system.
 
 ## Supabase email and phone OTP authentication
@@ -26,17 +32,6 @@ In Supabase Authentication settings, enable Email sign-in. For phone OTP, also e
 
 Never put a Razorpay key secret in `.env.example` or a `VITE_` variable. Keep payment secrets only in the ignored local `.env` used by the local payment server.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Browser storage
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The cart and admin dashboard data (products, banners, page content, demo orders) are stored in the browser's IndexedDB so uploaded product images are not limited by the ~5 MB localStorage quota. Data saved by older versions in localStorage is migrated automatically on first load, and changes sync between open tabs.

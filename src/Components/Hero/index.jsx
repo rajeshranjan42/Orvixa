@@ -80,7 +80,7 @@ export const Hero = ({ promotions = [] }) => {
               <div className="promotion-copy">
                 <h2>{promotion.title}</h2>
                 <h3>{promotion.category}</h3>
-                <p>Get up to ₹150 cashback*</p>
+                {promotion.offer && <p>{promotion.offer}</p>}
                 <div className="promotion-benefits">
                   <span>Free<br />Delivery</span>
                   <span>Easy<br />Returns</span>
